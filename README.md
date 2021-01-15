@@ -1,4 +1,4 @@
-# sml-unicode [![Build Status](https://travis-ci.org/diku-dk/sml-unicode.svg?branch=master)](https://travis-ci.org/diku-dk/sml-unicode)
+# sml-unicode [![CI](https://github.com/diku-dk/sml-unicode/workflows/CI/badge.svg)](https://github.com/diku-dk/sml-unicode/actions)
 
 This library makes it possible to process unicode stored in
 [UTF8](http://en.wikipedia.org/wiki/UTF-8) format.
