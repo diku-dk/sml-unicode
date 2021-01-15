@@ -11,6 +11,9 @@ build:
 $(MLLIB)/test/unicode_test.exe: $(FILES)
 	$(MLCOMP) -output $@ $<
 
+.PHONY: all
+all: $(MLLIB)/test/unicode_test.exe
+
 .PHONY: test
 test: $(MLLIB)/test/unicode_test.exe
 	@echo "Running test..."
