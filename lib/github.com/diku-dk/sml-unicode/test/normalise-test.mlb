@@ -1,6 +1,6 @@
 local
   $(SML_LIB)/basis/basis.mlb
-  ../unicode.mlb
+  ../unicode-normalise.mlb
 in
   normalise-test.sml
 end

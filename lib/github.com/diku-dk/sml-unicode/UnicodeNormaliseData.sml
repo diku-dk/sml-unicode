@@ -1,6 +1,6 @@
 (* Generated from Unicode 17.0.0; do not edit by hand.
  * Regenerate with tools/generate-normalisation.py.
- * Unicode data license: tools/unicode-license.txt. *)
+ * Unicode data license: unicode-license.txt (alongside the generated file). *)
 structure UnicodeNormaliseData = struct
   val classes = Vector.fromList [
     (768, 230),

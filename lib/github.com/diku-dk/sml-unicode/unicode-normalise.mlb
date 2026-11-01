@@ -1,0 +1,7 @@
+local
+  $(SML_LIB)/basis/basis.mlb
+  UnicodeNormaliseData.sml
+in
+  unicode-normalise.sig
+  UnicodeNormalise.sml
+end

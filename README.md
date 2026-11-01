@@ -2,7 +2,8 @@
 
 This library provides operations for Unicode text stored in UTF-8 strings.
 
-Refer to `unicode.mlb` in your SML project to use these structures:
+Refer to `unicode.mlb` for UTF-8 operations and character bindings, or
+`unicode-normalise.mlb` for canonical normalisation:
 
 - `Utf8` provides basic operations for processing UTF-8 text.
 - `UnicodeChars` provides bindings for useful Unicode characters.
@@ -16,10 +17,17 @@ Refer to `unicode.mlb` in your SML project to use these structures:
 
   - **signature** [`UTF8`](lib/github.com/diku-dk/sml-unicode/UTF8.sig)
   - **signature** [`UNICODE_CHARS`](lib/github.com/diku-dk/sml-unicode/UNICODE_CHARS.sig)
-  - **signature** [`UNICODE_NORMALISE`](lib/github.com/diku-dk/sml-unicode/unicode-normalise.sig)
   - **structure** `Utf8` :> `UTF8`
   - **structure** `UnicodeChars` :> `UNICODE_CHARS`
+
+- `lib/github.com/diku-dk/sml-unicode/unicode-normalise.mlb`:
+
+  - **signature** [`UNICODE_NORMALISE`](lib/github.com/diku-dk/sml-unicode/unicode-normalise.sig)
   - **structure** `UnicodeNormalise` :> `UNICODE_NORMALISE`
+
+The MLB files are independent and can be included together. `unicode.mlb`
+does not compile the normalisation tables; include `unicode-normalise.mlb`
+only when NFC or NFD is needed.
 
 ## Use of the package
 
@@ -52,7 +60,8 @@ command part of your build process.
 
 ## Canonical normalisation
 
-`UnicodeNormalise` implements the following interface:
+Include `lib/github.com/diku-dk/sml-unicode/unicode-normalise.mlb` to use
+`UnicodeNormalise`, which implements the following interface:
 
 ```sml
 signature UNICODE_NORMALISE = sig
@@ -107,8 +116,9 @@ python3 tools/generate-normalisation.py /path/to/ucd > lib/github.com/diku-dk/sm
 ```
 
 The generator verifies pinned input hashes. Unicode data is covered by
-[`tools/unicode-license.txt`](tools/unicode-license.txt); the generated tables
-require no runtime files or external libraries.
+[`unicode-license.txt`](lib/github.com/diku-dk/sml-unicode/unicode-license.txt)
+inside the package directory so the notice accompanies vendored tables.
+The generated tables require no runtime files or external libraries.
 
 ## Authors
 

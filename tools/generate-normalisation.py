@@ -47,7 +47,7 @@ compositions.sort()
 
 print("(* Generated from Unicode 17.0.0; do not edit by hand.")
 print(" * Regenerate with tools/generate-normalisation.py.")
-print(" * Unicode data license: tools/unicode-license.txt. *)")
+print(" * Unicode data license: unicode-license.txt (alongside the generated file). *)")
 print("structure UnicodeNormaliseData = struct")
 
 def vector(name, entries):

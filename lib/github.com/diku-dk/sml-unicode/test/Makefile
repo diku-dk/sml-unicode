@@ -37,5 +37,5 @@ NORMALIZATION_TEST ?= NormalizationTest.txt
 conformance: normalise-test.exe
 	./normalise-test.exe "$(NORMALIZATION_TEST)"
 
-normalise-test.exe: normalise-test.mlb normalise-test.sml ../unicode.mlb ../unicode-normalise.sig ../UnicodeNormalise.sml ../UnicodeNormaliseData.sml
+normalise-test.exe: normalise-test.mlb normalise-test.sml ../unicode-normalise.mlb ../unicode-normalise.sig ../UnicodeNormalise.sml ../UnicodeNormaliseData.sml
 	$(MLCOMP) -output $@ normalise-test.mlb
