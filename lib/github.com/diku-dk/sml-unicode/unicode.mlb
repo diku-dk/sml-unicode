@@ -1,8 +1,11 @@
 local
   $(SML_LIB)/basis/basis.mlb
+  UnicodeNormaliseData.sml
 in
   UTF8.sig
   Utf8.sml
   UNICODE_CHARS.sig
   UnicodeChars.sml
+  unicode-normalise.sig
+  UnicodeNormalise.sml
 end
