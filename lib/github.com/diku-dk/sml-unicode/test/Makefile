@@ -1,8 +1,9 @@
 MLCOMP ?= mlkit
 
 .PHONY: test
-test: unicode_test.res
-	cat $^
+test: unicode_test.res normalise-test.exe
+	cat unicode_test.res
+	./normalise-test.exe
 
 %.res: %.out
 	@(diff -aq $< $<.ok > /dev/null 2>&1; \
@@ -28,3 +29,13 @@ test: unicode_test.res
 .PHONY: clean
 clean:
 	rm -rf MLB *.out *~ *.exe *.res run
+
+# Set NORMALIZATION_TEST to a local Unicode 17.0.0 NormalizationTest.txt.
+NORMALIZATION_TEST ?= NormalizationTest.txt
+
+.PHONY: conformance
+conformance: normalise-test.exe
+	./normalise-test.exe "$(NORMALIZATION_TEST)"
+
+normalise-test.exe: normalise-test.mlb normalise-test.sml ../unicode-normalise.mlb ../unicode-normalise.sig ../UnicodeNormalise.sml ../UnicodeNormaliseData.sml
+	$(MLCOMP) -output $@ normalise-test.mlb

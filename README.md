@@ -1,13 +1,14 @@
 # sml-unicode [![CI](https://github.com/diku-dk/sml-unicode/workflows/CI/badge.svg)](https://github.com/diku-dk/sml-unicode/actions)
 
-This library makes it possible to process unicode stored in
-[UTF8](http://en.wikipedia.org/wiki/UTF-8) format.
+This library provides operations for Unicode text stored in UTF-8 strings.
 
-Just refer to the `unicode.mlb` file in your SML project. Then you can
-use the structures `Utf8` and `UnicodeChars`. The `Utf8` structure
-provides basic operations for processing UTF8 files. The
-`UnicodeChars` structure provides bindings for a series of useful
-unicode characters.
+Refer to `unicode.mlb` for UTF-8 operations and character bindings, or
+`unicode-normalise.mlb` for canonical normalisation:
+
+- `Utf8` provides basic operations for processing UTF-8 text.
+- `UnicodeChars` provides bindings for useful Unicode characters.
+- `UnicodeNormalise` provides canonical composition (NFC) and decomposition
+  (NFD) of UTF-8 strings.
 
 
 ## Overview of MLB files
@@ -18,6 +19,15 @@ unicode characters.
   - **signature** [`UNICODE_CHARS`](lib/github.com/diku-dk/sml-unicode/UNICODE_CHARS.sig)
   - **structure** `Utf8` :> `UTF8`
   - **structure** `UnicodeChars` :> `UNICODE_CHARS`
+
+- `lib/github.com/diku-dk/sml-unicode/unicode-normalise.mlb`:
+
+  - **signature** [`UNICODE_NORMALISE`](lib/github.com/diku-dk/sml-unicode/unicode-normalise.sig)
+  - **structure** `UnicodeNormalise` :> `UNICODE_NORMALISE`
+
+The MLB files are independent and can be included together. `unicode.mlb`
+does not compile the normalisation tables; include `unicode-normalise.mlb`
+only when NFC or NFD is needed.
 
 ## Use of the package
 
@@ -48,6 +58,69 @@ part of your own project sources (vendoring) or you can add the
 `sml.pkg` file to your project sources and make the `smlpkg sync`
 command part of your build process.
 
+## Canonical normalisation
+
+Include `lib/github.com/diku-dk/sml-unicode/unicode-normalise.mlb` to use
+`UnicodeNormalise`, which implements the following interface:
+
+```sml
+signature UNICODE_NORMALISE = sig
+    val nfc : string -> string
+    val nfd : string -> string
+end
+```
+
+For example, `å` can be represented by one code point or by `a` followed by
+a combining ring. NFC gives both spellings the same composed representation;
+NFD gives both the same decomposed representation:
+
+```sml
+val composed = UnicodeNormalise.nfc "a\204\138" (* UTF-8 å *)
+val decomposed = UnicodeNormalise.nfd composed (* a + combining ring *)
+```
+
+The interface is documented in
+[`unicode-normalise.sig`](lib/github.com/diku-dk/sml-unicode/unicode-normalise.sig).
+Both functions accept and return UTF-8 strings, use Unicode 17.0.0, and raise
+`Chr` for malformed UTF-8. They support supplementary characters and Hangul,
+and preserve compatibility distinctions and unassigned code points.
+
+The implementation uses the [UAX #15 section 9](https://www.unicode.org/reports/tr15/#Detecting_Normalization_Forms)
+Quick_Check properties and
+canonical combining-class order to return already-normalised strings without
+building a normalised copy. NFC `Maybe` cases use the full algorithm. ASCII
+has a separate fast path. The tables use the supplied Unicode properties,
+including the context-sensitive cases discussed in section 9.2.
+
+### Testing
+
+Run the existing tests and normalisation regressions with `make test`.
+For the full Unicode conformance suite:
+
+```sh
+curl -fL https://www.unicode.org/Public/17.0.0/ucd/NormalizationTest.txt -o /tmp/NormalizationTest.txt
+make conformance NORMALIZATION_TEST=/tmp/NormalizationTest.txt
+```
+
+The conformance runner checks the NFC/NFD column relationships and identity
+for every remaining Unicode scalar value.
+
+### Regenerating the Unicode tables
+
+Only table regeneration requires Python 3. Download `UnicodeData.txt` and
+`DerivedNormalizationProps.txt` from
+<https://www.unicode.org/Public/17.0.0/ucd/> into a directory, then run:
+
+```sh
+python3 tools/generate-normalisation.py /path/to/ucd > lib/github.com/diku-dk/sml-unicode/UnicodeNormaliseData.sml
+```
+
+The generator verifies pinned input hashes. Unicode data is covered by
+[`unicode-license.txt`](lib/github.com/diku-dk/sml-unicode/unicode-license.txt)
+inside the package directory so the notice accompanies vendored tables.
+The generated tables require no runtime files or external libraries.
+
 ## Authors
 
-Copyright (c) 2015-2021 Martin Elsman, University of Copenhagen.
+Copyright (c) 2015-2026 Martin Elsman, University of Copenhagen.
+Normalisation added with help from GPT-6.1 Sol Light
